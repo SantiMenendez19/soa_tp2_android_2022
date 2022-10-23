@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+    android:id="@+id/arduino"
+    android:enabled="true"
+    android:icon="@drawable/icon_arduino"
+    android:title="@string/menu_arduino"/>
+    <item
+        android:id="@+id/android"
+        android:enabled="true"
+        android:icon="@drawable/icon_android"
+        android:title="@string/menu_android"/>
+</menu>
