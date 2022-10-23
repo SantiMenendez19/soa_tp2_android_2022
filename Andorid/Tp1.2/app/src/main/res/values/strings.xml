@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">UnLaM SOA</string>
+    <string name="menu_arduino">Arduino</string>
+    <string name="menu_android">Android</string>
+    <string name="action_success">OK</string>
+    <string name="action_error">ERROR</string>
+    <string name="arduino_card_button_tittle">Enviar Acción</string>
+    <string name="arduino_card_button_text">Envia una acción al dispositivo arduino</string>
+    <string name="arduino_card_button_action_text">Enviar</string>
+    <string name="arduino_card_text_tittle">Información</string>
+    <string name="arduino_card_text_text">Simula el valor del potenciómetro mostrando un valor random cada 5 segundos</string>
+    <string name="android_map_description">Mapa UnLaM</string>
+    <string name="android_pin_description">Location Pin</string>
+</resources>
