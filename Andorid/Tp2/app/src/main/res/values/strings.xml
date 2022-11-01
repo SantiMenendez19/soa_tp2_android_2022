@@ -4,9 +4,27 @@
     <string name="menu_android">Android</string>
     <string name="action_success">OK</string>
     <string name="action_error">ERROR</string>
+    <string name="close">Cerrar</string>
+
+    <string name="bt_unavailable">El dispositivo no posee conexión bluetooth</string>
+    <string name="bt_activate">Activar Bluetooth</string>
+    <string name="bt_deactivated">Desactiva Bluetooth</string>
+    <string name="bt_open_settings">Abrir Configuración Bluetooth</string>
+    <string name="bt_device_list_header">Listado de dispositivos</string>
+    <string name="bt_device_list_info">Si el disposiivo que busca no esta en la lista abra la configuracion bluetooth para añadir otro</string>
+
+    <string name="arduino_card_text_tittle">Información</string>
+    <string name="arduino_card_text_text">Muestra el valor seleccionado en el potenciómetro que define la velocidad del motor  </string>
+
     <string name="arduino_card_button_tittle">Enviar Acción</string>
     <string name="arduino_card_button_text">Envia una acción al dispositivo arduino</string>
     <string name="arduino_card_button_action_text">Enviar</string>
-    <string name="arduino_card_text_tittle">Información</string>
-    <string name="arduino_card_text_text">Simula el valor del potenciómetro mostrando un valor random cada 5 segundos</string>
+
+
+    <string name="cd_icon_down">icon down</string>
+    <string name="cd_icon_bt_disconnected">icon bluetooth disconnected</string>
+
+    <string name="ph_device_name">Device Name</string>
+    <string name="ph_device_mac_address">000000000</string>
+
 </resources>
