@@ -14,7 +14,6 @@ public class AndroidModel implements Model {
     @Override
     public void onDestroy() {
 
-
     }
 
 }

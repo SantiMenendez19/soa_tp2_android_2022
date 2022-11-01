@@ -13,7 +13,6 @@ import com.unlam.soa.tp2.interfaces.View;
 import com.unlam.soa.tp2.presenter.AndroidPresenter;
 
 public class AndroidActivity extends AppCompatActivity implements View {
-    private final int NEEDED_PERMISSION =26;
     AndroidPresenter presenter;
     ConstraintLayout constraintLayout;
 
