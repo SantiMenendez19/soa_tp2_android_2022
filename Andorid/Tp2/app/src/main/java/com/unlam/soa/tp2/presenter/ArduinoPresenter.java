@@ -23,9 +23,6 @@ import com.unlam.soa.tp2.view.fragment.BtUnavailableFragment;
 import java.util.ArrayList;
 
 public class ArduinoPresenter extends BasePresenter {
-    private final String TAG_BT_UNAVAILABLE = "BT_UNAVAILABLE";
-    private final String TAG_BT_AVAILABLE = "BT_AVAILABLE";
-    private final String TAG_BT_COMMUNICATION = "BT_COMMUNICATION";
     private final FragmentManager fragmentManager;
     private final ArduinoModel model;
     private final ArduinoActivity activity;
@@ -39,21 +36,13 @@ public class ArduinoPresenter extends BasePresenter {
 
     public void setBtUnavailable(){
         BtUnavailableFragment fragment = new BtUnavailableFragment();
-        replaceFragment(fragment,TAG_BT_UNAVAILABLE);
+        replaceFragment(fragment);
     }
     public void setBtAvailable(boolean btEnabled, ArrayList<BluetoothDevice> devices){
-        BtAvailableFragment fragment = (BtAvailableFragment) fragmentManager.findFragmentByTag(TAG_BT_AVAILABLE);
-        if(fragment==null){
-            fragment = BtAvailableFragment.newInstance(btEnabled,devices);
+        BtAvailableFragment  fragment = BtAvailableFragment.newInstance(btEnabled,devices);
             fragment.bluetoothClickListener = bluetoothClickListener;
             fragment.bluetoothItemClickListener  = bluetoothItemClickListener;
-        }
-        else{
-            fragment.updateData(btEnabled,devices);
-        }
-        if(!fragment.isVisible()){
-            replaceFragment(fragment,TAG_BT_AVAILABLE);
-        }
+            replaceFragment(fragment);
     }
 
     public boolean checkPermission(String permission) {
@@ -96,9 +85,9 @@ public class ArduinoPresenter extends BasePresenter {
     public void onDestroy() {
         this.model.onDestroy();
     }
-    private void replaceFragment(Fragment fragment,String tag){
+    private void replaceFragment(Fragment fragment){
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.fragment_container,fragment,tag);
+        ft.replace(R.id.fragment_container,fragment);
         ft.commit();
     }
     public final BluetoothClickListener bluetoothClickListener = new BluetoothClickListener() {
