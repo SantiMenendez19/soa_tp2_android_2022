@@ -1,22 +1,20 @@
 package com.unlam.soa.tp2.presenter;
 
-import android.content.Context;
-
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.unlam.soa.tp2.R;
-import com.unlam.soa.tp2.interfaces.Presenter;
-import com.unlam.soa.tp2.interfaces.View;
+import com.unlam.soa.tp2.interfaces.IPresenter;
+import com.unlam.soa.tp2.interfaces.IView;
 
-public abstract class BasePresenter implements Presenter {
+public abstract class BasePresenter implements IPresenter {
     ConstraintLayout constraintLayout;
-    View view;
+    IView view;
 
     private final int colorSuccess;
     private final int colorError;
     private final int colorWithe;
     private final int colorWarning;
-    public BasePresenter(View view,ConstraintLayout constraintLayout){
+    public BasePresenter(IView view, ConstraintLayout constraintLayout){
         this.view = view;
         this.constraintLayout =constraintLayout;
         this.colorSuccess = this.getColor(R.color.success);

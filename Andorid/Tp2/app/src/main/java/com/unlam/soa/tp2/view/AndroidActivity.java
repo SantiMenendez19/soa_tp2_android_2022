@@ -2,17 +2,15 @@ package com.unlam.soa.tp2.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.unlam.soa.tp2.R;
-import com.unlam.soa.tp2.interfaces.View;
+import com.unlam.soa.tp2.interfaces.IView;
 import com.unlam.soa.tp2.presenter.AndroidPresenter;
 
-public class AndroidActivity extends AppCompatActivity implements View {
+public class AndroidActivity extends AppCompatActivity implements IView {
     AndroidPresenter presenter;
     ConstraintLayout constraintLayout;
 
@@ -31,7 +29,6 @@ public class AndroidActivity extends AppCompatActivity implements View {
     public int getResourceColor(int colorId) {
         return getResources().getColor(colorId);
     }
-
 
     @Override
     public void onDestroy(){

@@ -2,7 +2,6 @@ package com.unlam.soa.tp2.entities;
 
 import android.Manifest;
 import android.bluetooth.BluetoothDevice;
-import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +9,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.unlam.soa.tp2.R;
-import com.unlam.soa.tp2.interfaces.BluetoothItemClickListener;
+import com.unlam.soa.tp2.interfaces.IBluetoothItemClickListener;
 
 import java.util.ArrayList;
 
 public class BtDeviceListAdapter extends RecyclerView.Adapter<BtDeviceListAdapter.BtDeviceViewHolder> {
     private final ArrayList<BluetoothDevice> deviceList;
-    public BluetoothItemClickListener bluetoothItemClickListener;
+    public IBluetoothItemClickListener bluetoothItemClickListener;
 
     public BtDeviceListAdapter(ArrayList<BluetoothDevice> deviceList) {
         this.deviceList = deviceList;

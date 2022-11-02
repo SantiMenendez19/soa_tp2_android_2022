@@ -14,8 +14,8 @@ import android.widget.Button;
 
 import com.unlam.soa.tp2.R;
 import com.unlam.soa.tp2.entities.BtDeviceListAdapter;
-import com.unlam.soa.tp2.interfaces.BluetoothClickListener;
-import com.unlam.soa.tp2.interfaces.BluetoothItemClickListener;
+import com.unlam.soa.tp2.interfaces.IBluetoothClickListener;
+import com.unlam.soa.tp2.interfaces.IBluetoothItemClickListener;
 
 import java.util.ArrayList;
 
@@ -27,8 +27,8 @@ public class BtAvailableFragment extends Fragment {
     private ArrayList<BluetoothDevice> btDeviceList;
     private Button btnBtActivate;
     private Button btnBtOpenSettings;
-    public BluetoothClickListener bluetoothClickListener;
-    public BluetoothItemClickListener bluetoothItemClickListener;
+    public IBluetoothClickListener bluetoothClickListener;
+    public IBluetoothItemClickListener bluetoothItemClickListener;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView rvBtDeviceList;
 
@@ -40,8 +40,8 @@ public class BtAvailableFragment extends Fragment {
    public static BtAvailableFragment newInstance(boolean btEnabled, ArrayList<BluetoothDevice> devices) {
         BtAvailableFragment fragment = new BtAvailableFragment();
         Bundle args = new Bundle();
-        args.putBoolean(fragment.ARG_BT_ENABLED, btEnabled);
-        args.putParcelableArrayList(fragment.ARG_BT_DEVICE_LIST, devices);
+        args.putBoolean(BtAvailableFragment.ARG_BT_ENABLED, btEnabled);
+        args.putParcelableArrayList(BtAvailableFragment.ARG_BT_DEVICE_LIST, devices);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,11 +68,7 @@ public class BtAvailableFragment extends Fragment {
         this.refreshData();
         return root;
     }
-    public void updateData(boolean btEnabled, ArrayList<BluetoothDevice> devices){
-        this.btEnabled = btEnabled;
-        this.btDeviceList = devices;
-        refreshData();
-    }
+
     private void refreshData(){
         if(btEnabled){
             btnBtActivate.setText(getString(R.string.bt_deactivated));

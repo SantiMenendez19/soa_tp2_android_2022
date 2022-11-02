@@ -1,5 +1,5 @@
 package com.unlam.soa.tp2.interfaces;
 
-public interface BluetoothItemClickListener {
+public interface IBluetoothItemClickListener {
     void onItemClick(int position);
 }

@@ -15,22 +15,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.unlam.soa.tp2.R;
-import com.unlam.soa.tp2.entities.Constants;
-import com.unlam.soa.tp2.interfaces.View;
+import com.unlam.soa.tp2.interfaces.IView;
 import com.unlam.soa.tp2.presenter.ArduinoPresenter;
 
-import java.util.ArrayList;
-
-public class ArduinoActivity extends AppCompatActivity implements View {
+public class ArduinoActivity extends AppCompatActivity implements IView {
     private final int BT_PERMISSION_REQUEST=25;
-    ConstraintLayout constraintLayout;
-    ArduinoPresenter presenter;
-    BottomNavigationView bottomNavigation;
+    private ConstraintLayout constraintLayout;
+    private ArduinoPresenter presenter;
+    private BottomNavigationView bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +54,13 @@ public class ArduinoActivity extends AppCompatActivity implements View {
         return ActivityCompat.checkSelfPermission(this,permission);
     }
 
-    public void fireActivity(Intent intent, String action) {
-        if(Constants.BT_CONNECT_REQUEST.equals(action)){
+    public void fireActivity(Intent intent) {
+        if(BluetoothAdapter.ACTION_REQUEST_ENABLE.equals(intent.getAction())){
             btActivityResultLauncher.launch(intent);
             return;
         }
         startActivity(intent);
     }
-
     @Override
     public void onDestroy() {
         unregisterReceiver(receiver);
@@ -77,22 +72,22 @@ public class ArduinoActivity extends AppCompatActivity implements View {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == BT_PERMISSION_REQUEST){
-            this.presenter.updatePermission(permissions,grantResults);
+            this.presenter.onPermissionChange(permissions,grantResults);
         }
     }
     private void btRegisterReceiver(){
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         registerReceiver(receiver, filter);
 
     }
     private final ActivityResultLauncher<Intent> btActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    this.presenter.showWarning("Activando Bluetooth...");
-                    this.presenter.notify(Constants.BT_CONNECT_REQUEST);
+                if (result.getResultCode() != Activity.RESULT_OK) {
+                    this.presenter.showWarning("No se Activo Bluetooth");
                 }
             });
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -103,11 +98,18 @@ public class ArduinoActivity extends AppCompatActivity implements View {
                 case BluetoothAdapter.ACTION_STATE_CHANGED:
                     final int state =intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,BluetoothAdapter.ERROR);
                     if(state == BluetoothAdapter.STATE_ON || state == BluetoothAdapter.STATE_OFF){
-                        presenter.notify(Constants.BT_CONNECT_REQUEST);
+                        presenter.onBluetoothAdapterChanges(new String[]{action});
                     }
                     break;
                 case BluetoothDevice.ACTION_BOND_STATE_CHANGED:
-                     presenter.notify(Constants.BT_CONNECT_REQUEST);
+                    final int stateBound = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR);
+                    if(stateBound == BluetoothDevice.BOND_BONDED ) {
+                        presenter.onBluetoothAdapterChanges(new String[]{action});
+                    }
+                    break;
+                case BluetoothDevice.ACTION_ACL_DISCONNECTED:
+                    BluetoothDevice device  =intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    presenter.onBluetoothAdapterChanges(new String[]{action,device.getAddress()});
                     break;
             }
         }

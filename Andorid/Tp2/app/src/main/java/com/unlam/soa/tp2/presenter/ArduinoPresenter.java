@@ -1,5 +1,6 @@
 package com.unlam.soa.tp2.presenter;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,11 +14,13 @@ import androidx.fragment.app.FragmentTransaction;
 import com.unlam.soa.tp2.R;
 import com.unlam.soa.tp2.entities.Constants;
 import com.unlam.soa.tp2.entities.CustomPermission;
-import com.unlam.soa.tp2.interfaces.BluetoothClickListener;
-import com.unlam.soa.tp2.interfaces.BluetoothItemClickListener;
+import com.unlam.soa.tp2.interfaces.IBluetoothClickListener;
+import com.unlam.soa.tp2.interfaces.IBluetoothDeviceConnection;
+import com.unlam.soa.tp2.interfaces.IBluetoothItemClickListener;
 import com.unlam.soa.tp2.model.ArduinoModel;
 import com.unlam.soa.tp2.view.ArduinoActivity;
 import com.unlam.soa.tp2.view.fragment.BtAvailableFragment;
+import com.unlam.soa.tp2.view.fragment.BtCommunicationFragment;
 import com.unlam.soa.tp2.view.fragment.BtUnavailableFragment;
 
 import java.util.ArrayList;
@@ -26,6 +29,7 @@ public class ArduinoPresenter extends BasePresenter {
     private final FragmentManager fragmentManager;
     private final ArduinoModel model;
     private final ArduinoActivity activity;
+    private String selectedMacAddress;
 
     public ArduinoPresenter(ArduinoActivity activity, ConstraintLayout constraintLayout, FragmentManager fragmentManager) {
         super(activity,constraintLayout);
@@ -34,41 +38,58 @@ public class ArduinoPresenter extends BasePresenter {
         this.model = new ArduinoModel(this);
     }
 
-    public void setBtUnavailable(){
+    public void setBtUnavailableView(){
         BtUnavailableFragment fragment = new BtUnavailableFragment();
         replaceFragment(fragment);
     }
-    public void setBtAvailable(boolean btEnabled, ArrayList<BluetoothDevice> devices){
+    public void setBtAvailableView(boolean btEnabled, ArrayList<BluetoothDevice> devices){
         BtAvailableFragment  fragment = BtAvailableFragment.newInstance(btEnabled,devices);
-            fragment.bluetoothClickListener = bluetoothClickListener;
-            fragment.bluetoothItemClickListener  = bluetoothItemClickListener;
-            replaceFragment(fragment);
+        fragment.bluetoothClickListener = bluetoothClickListener;
+        fragment.bluetoothItemClickListener  = bluetoothItemClickListener;
+        replaceFragment(fragment);
+    }
+
+    public void setBtCommunicationView(String deviceMacAddress){
+        selectedMacAddress = deviceMacAddress;
+        BtCommunicationFragment fragment = BtCommunicationFragment.newInstance(deviceMacAddress);
+        fragment.bluetoothDeviceConnection = bluetoothDeviceConnection;
+        replaceFragment(fragment);
     }
 
     public boolean checkPermission(String permission) {
         return this.activity.checkPermission(permission) == PackageManager.PERMISSION_GRANTED;
     }
 
-    public void openActivity(Intent intent, String action){
-        this.activity.fireActivity(intent,action);
+    public void openActivity(Intent intent){
+        this.activity.fireActivity(intent);
     }
-    public void notify(String action){
-         switch (action){
-             case Constants.BT_CONNECT_REQUEST:
+    public void onBluetoothAdapterChanges(String[] params){
+         switch (params[0]){
+             case BluetoothAdapter.ACTION_REQUEST_ENABLE:
+             case BluetoothAdapter.ACTION_STATE_CHANGED:
+             case BluetoothDevice.ACTION_BOND_STATE_CHANGED:
                  this.model.updateDevicesInfo();
                  break;
+             case BluetoothDevice.ACTION_ACL_DISCONNECTED:
+                 if(selectedMacAddress.equals(params[1])){
+                    selectedMacAddress = null;
+                    this.model.updateDevicesInfo();
+                 }
+                 break;
          }
+         
     }
 
     public void requestPermission(ArrayList<String> permission){
-        String[] missingPermission = permission.toArray(new String[permission.size()]);
+        String[] missingPermission = permission.toArray(new String[0]);
         this.activity.requestPermission(missingPermission);
     }
-    public void updatePermission(String[] permissions, int[] results) {
+
+    public void onPermissionChange(String[] permissions, int[] results) {
         boolean oneRejected = false;
         for (int i=0;i<=permissions.length;i++){
             CustomPermission customPermission = Constants.getBTPermission(permissions[i]);
-            oneRejected = oneRejected && results[i]!=PackageManager.PERMISSION_GRANTED;
+            oneRejected = (oneRejected || results[i]!=PackageManager.PERMISSION_GRANTED);
             if(customPermission!=null){
                 customPermission.granted = results[i]== PackageManager.PERMISSION_GRANTED;
             }
@@ -80,17 +101,19 @@ public class ArduinoPresenter extends BasePresenter {
         }
     }
 
-
     @Override
     public void onDestroy() {
         this.model.onDestroy();
     }
+
     private void replaceFragment(Fragment fragment){
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.replace(R.id.fragment_container,fragment);
         ft.commit();
     }
-    public final BluetoothClickListener bluetoothClickListener = new BluetoothClickListener() {
+
+
+    public final IBluetoothClickListener bluetoothClickListener = new IBluetoothClickListener() {
         @Override
         public void onClickActivate() { model.activateBluetooth(); }
 
@@ -104,11 +127,14 @@ public class ArduinoPresenter extends BasePresenter {
             model.openBtSettings();
         }
     };
-    private final BluetoothItemClickListener bluetoothItemClickListener = new BluetoothItemClickListener() {
+
+    private final IBluetoothItemClickListener bluetoothItemClickListener = new IBluetoothItemClickListener() {
         @Override
         public void onItemClick(int position) {
             model.connectDevice(position);
         }
     };
+
+    private final IBluetoothDeviceConnection bluetoothDeviceConnection = params -> onBluetoothAdapterChanges(params);
 
 }
