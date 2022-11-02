@@ -19,12 +19,13 @@
     <string name="arduino_card_button_tittle">Enviar Acción</string>
     <string name="arduino_card_button_text">Envia una acción al dispositivo arduino</string>
     <string name="arduino_card_button_action_text">Enviar</string>
-
+    <string name="btn_back_to_list">Volver al listado</string>
 
     <string name="cd_icon_down">icon down</string>
     <string name="cd_icon_bt_disconnected">icon bluetooth disconnected</string>
 
     <string name="ph_device_name">Device Name</string>
     <string name="ph_device_mac_address">000000000</string>
+    <string name="ph_connect_device">Conectando con el Dipsositivo</string>
 
 </resources>

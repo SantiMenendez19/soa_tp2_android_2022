@@ -29,13 +29,14 @@ public class ArduinoPresenter extends BasePresenter {
     private final FragmentManager fragmentManager;
     private final ArduinoModel model;
     private final ArduinoActivity activity;
-    private String selectedMacAddress;
+    public String selectedMacAddress;
 
     public ArduinoPresenter(ArduinoActivity activity, ConstraintLayout constraintLayout, FragmentManager fragmentManager) {
         super(activity,constraintLayout);
         this.activity = activity;
         this.fragmentManager = fragmentManager;
         this.model = new ArduinoModel(this);
+
     }
 
     public void setBtUnavailableView(){
@@ -71,13 +72,13 @@ public class ArduinoPresenter extends BasePresenter {
                  this.model.updateDevicesInfo();
                  break;
              case BluetoothDevice.ACTION_ACL_DISCONNECTED:
-                 if(selectedMacAddress.equals(params[1])){
+                 if(selectedMacAddress!=null && selectedMacAddress.equals(params[1])){
                     selectedMacAddress = null;
                     this.model.updateDevicesInfo();
                  }
                  break;
          }
-         
+
     }
 
     public void requestPermission(ArrayList<String> permission){

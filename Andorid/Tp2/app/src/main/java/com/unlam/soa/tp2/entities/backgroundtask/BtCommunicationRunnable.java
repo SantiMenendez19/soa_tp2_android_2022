@@ -1,5 +1,7 @@
 package com.unlam.soa.tp2.entities.backgroundtask;
 
+import static java.lang.System.currentTimeMillis;
+
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 
@@ -11,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class BtCommunicationRunnable implements Runnable {
+    private final int TIME_OUT_READ = 200;
     private final InputStream inputStream;
     private final OutputStream outputStream;
     public IBluetoothRunnableNotification bluetoothRunnableNotification;
@@ -26,14 +29,19 @@ public class BtCommunicationRunnable implements Runnable {
         try {
             write(Constants.ARDUINO_GET_INFO);
             StringBuilder message = new StringBuilder();
-            while (message.indexOf(Constants.BT_END_OF_MESSAGE) <0){
+            long start = currentTimeMillis();
+            boolean timeout =false;
+            while (message.indexOf(Constants.BT_END_OF_MESSAGE) <0 && !timeout){
                 byte[] buffer = new byte[256];
                 int bytes;
                 bytes = inputStream.read(buffer);
                 String readMessage = new String(buffer, 0, bytes);
                 message.append(readMessage);
+                timeout = currentTimeMillis()-start > TIME_OUT_READ;
             }
+            if(!timeout){
                 bluetoothRunnableNotification.notifyModel(message.toString());
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

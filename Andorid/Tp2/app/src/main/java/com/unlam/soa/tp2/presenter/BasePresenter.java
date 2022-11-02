@@ -39,6 +39,7 @@ public abstract class BasePresenter implements IPresenter {
     private Snackbar getSnackbar(String message){
         Snackbar snackbar =  Snackbar.make(constraintLayout,message,Snackbar.LENGTH_LONG)
                 .setTextColor(colorWithe)
+                .setActionTextColor(colorWithe)
                 .setAnchorView(R.id.bottom_navigation);
         snackbar.setAction(R.string.close,view->snackbar.dismiss());
         return snackbar;

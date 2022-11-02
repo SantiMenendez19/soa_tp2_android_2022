@@ -1,5 +1,4 @@
 package com.unlam.soa.tp2.view;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -7,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -41,7 +39,7 @@ public class ArduinoActivity extends AppCompatActivity implements IView {
         this.btRegisterReceiver();
     }
 
-    @Override
+     @Override
     public int getResourceColor(int colorId) {
         return getResources().getColor(colorId);
     }
@@ -67,7 +65,6 @@ public class ArduinoActivity extends AppCompatActivity implements IView {
         super.onDestroy();
         this.presenter.onDestroy();
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -75,6 +72,7 @@ public class ArduinoActivity extends AppCompatActivity implements IView {
             this.presenter.onPermissionChange(permissions,grantResults);
         }
     }
+
     private void btRegisterReceiver(){
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);

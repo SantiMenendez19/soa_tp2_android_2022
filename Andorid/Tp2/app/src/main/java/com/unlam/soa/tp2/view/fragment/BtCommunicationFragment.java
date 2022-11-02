@@ -1,16 +1,14 @@
 package com.unlam.soa.tp2.view.fragment;
 
+import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
-
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.unlam.soa.tp2.R;
 import com.unlam.soa.tp2.interfaces.IBluetoothDeviceConnection;
 import com.unlam.soa.tp2.interfaces.IView;
@@ -24,12 +22,12 @@ public class BtCommunicationFragment extends Fragment implements IView {
     private BtCommunicationPresenter presenter;
     private TextView txtPowerMeter;
     private Button btnAction;
+    private Button btnBack;
     private ConstraintLayout constraintLayout;
 
     public BtCommunicationFragment() {
 
     }
-
     public static BtCommunicationFragment newInstance(String deviceMacAddress) {
         BtCommunicationFragment fragment = new BtCommunicationFragment();
         Bundle args = new Bundle();
@@ -64,6 +62,10 @@ public class BtCommunicationFragment extends Fragment implements IView {
         txtPowerMeter = root.findViewById(R.id.txtPowerMeter);
         btnAction = root.findViewById(R.id.btnAction);
         btnAction.setOnClickListener(view->this.presenter.sendAction());
+        btnBack = root.findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(view->{
+            this.bluetoothDeviceConnection.onChange(new String[]{BluetoothDevice.ACTION_ACL_DISCONNECTED,deviceMacAddress});
+        });
         constraintLayout = root.findViewById(R.id.btConstraintLayout);
         this.presenter = new BtCommunicationPresenter(this,constraintLayout);
         return root;

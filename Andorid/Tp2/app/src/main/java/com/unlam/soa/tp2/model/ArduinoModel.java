@@ -49,6 +49,7 @@ public class ArduinoModel implements IModel {
                 this.presenter.showWarning("Faltan Permisos: No se puede obtener el listado de dipositivos");
             }
         }
+
         this.presenter.setBtAvailableView(btAdapter.isEnabled(), btDeviceList);
     }
 
