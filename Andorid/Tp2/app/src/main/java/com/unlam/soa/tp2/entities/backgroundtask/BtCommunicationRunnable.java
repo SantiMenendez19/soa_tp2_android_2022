@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class BtCommunicationRunnable implements Runnable {
-    private final int TIME_OUT_READ = 200;
     private final InputStream inputStream;
     private final OutputStream outputStream;
     public IBluetoothRunnableNotification bluetoothRunnableNotification;
@@ -37,7 +36,7 @@ public class BtCommunicationRunnable implements Runnable {
                 bytes = inputStream.read(buffer);
                 String readMessage = new String(buffer, 0, bytes);
                 message.append(readMessage);
-                timeout = currentTimeMillis()-start > TIME_OUT_READ;
+                timeout = (currentTimeMillis() - start) > Constants.BT_READ_TIME_OUT;
             }
             if(!timeout){
                 bluetoothRunnableNotification.notifyModel(message.toString());
