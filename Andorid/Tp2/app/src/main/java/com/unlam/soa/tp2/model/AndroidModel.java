@@ -1,33 +1,19 @@
 package com.unlam.soa.tp2.model;
 
-import com.unlam.soa.tp2.contract.Contract;
+import com.unlam.soa.tp2.interfaces.IModel;
+import com.unlam.soa.tp2.presenter.AndroidPresenter;
 
 
-public class AndroidModel implements Contract.Model {
-    Contract.Presenter presenter;
-    public AndroidModel(Contract.Presenter presenter){
+public class AndroidModel implements IModel {
+
+    AndroidPresenter presenter;
+    public AndroidModel(AndroidPresenter presenter){
         this.presenter = presenter;
-    }
-    @Override
-    public void doInBackground() {
-
-    }
-
-    @Override
-    public void setInfo(String[] params) {
-
     }
 
     @Override
     public void onDestroy() {
 
-
-    }
-
-    @Override
-    public String getInfo(String[] params) {
-
-        return  this.presenter.getInfo(params);
     }
 
 }
