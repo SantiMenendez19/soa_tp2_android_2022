@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import com.unlam.soa.tp2.R;
+import com.unlam.soa.tp2.entities.Constants;
 import com.unlam.soa.tp2.interfaces.IBluetoothDeviceConnection;
 import com.unlam.soa.tp2.interfaces.IView;
 import com.unlam.soa.tp2.presenter.BtCommunicationPresenter;
@@ -47,11 +48,13 @@ public class BtCommunicationFragment extends Fragment implements IView {
     public void onPause()
     {
         super.onPause();
+        bluetoothDeviceConnection.onChange(new String[]{Constants.FRAGMENT_PAUSED});
         this.presenter.stopCommunication();
     }
     @Override
     public void onResume(){
         super.onResume();
+        bluetoothDeviceConnection.onChange(new String[]{Constants.FRAGMENT_RESUMED});
         this.presenter.startCommunication(deviceMacAddress);
     }
 
@@ -63,9 +66,7 @@ public class BtCommunicationFragment extends Fragment implements IView {
         btnAction = root.findViewById(R.id.btnAction);
         btnAction.setOnClickListener(view->this.presenter.sendAction());
         btnBack = root.findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(view->{
-            this.bluetoothDeviceConnection.onChange(new String[]{BluetoothDevice.ACTION_ACL_DISCONNECTED,deviceMacAddress});
-        });
+        btnBack.setOnClickListener(view-> this.bluetoothDeviceConnection.onChange(new String[]{BluetoothDevice.ACTION_ACL_DISCONNECTED,deviceMacAddress}));
         constraintLayout = root.findViewById(R.id.btConstraintLayout);
         this.presenter = new BtCommunicationPresenter(this,constraintLayout);
         return root;
@@ -81,7 +82,6 @@ public class BtCommunicationFragment extends Fragment implements IView {
     public void onDestroy(){
         super.onDestroy();
         this.presenter.onDestroy();
-
     }
 }
     

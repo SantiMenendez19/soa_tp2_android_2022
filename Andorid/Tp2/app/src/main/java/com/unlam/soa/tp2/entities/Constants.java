@@ -17,6 +17,8 @@ public class Constants {
     public static final String ARDUINO_GET_INFO ="I";
     public static final String BT_END_OF_MESSAGE = "\r\n";
     public static final int BT_DELAY_THREAD = 1000;
+    public static final String FRAGMENT_PAUSED = "FRAGMENT_PAUSED";
+    public static final String FRAGMENT_RESUMED = "FRAGMENT_RESUMED";
 
 
     public static CustomPermission getBTPermission(String permission){

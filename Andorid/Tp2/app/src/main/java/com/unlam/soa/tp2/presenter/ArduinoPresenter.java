@@ -30,6 +30,7 @@ public class ArduinoPresenter extends BasePresenter {
     private final ArduinoModel model;
     private final ArduinoActivity activity;
     public String selectedMacAddress;
+    private boolean communicationPaused=false;
 
     public ArduinoPresenter(ArduinoActivity activity, ConstraintLayout constraintLayout, FragmentManager fragmentManager) {
         super(activity,constraintLayout);
@@ -71,14 +72,22 @@ public class ArduinoPresenter extends BasePresenter {
              case BluetoothDevice.ACTION_BOND_STATE_CHANGED:
                  this.model.updateDevicesInfo();
                  break;
+             case Constants.FRAGMENT_PAUSED:
+                 this.communicationPaused=true;
+                 break;
+             case Constants.FRAGMENT_RESUMED:
+                 communicationPaused = false;
+                 break;
              case BluetoothDevice.ACTION_ACL_DISCONNECTED:
+                 if(communicationPaused){
+                     return;
+                 }
                  if(selectedMacAddress!=null && selectedMacAddress.equals(params[1])){
                     selectedMacAddress = null;
                     this.model.updateDevicesInfo();
                  }
                  break;
          }
-
     }
 
     public void requestPermission(ArrayList<String> permission){

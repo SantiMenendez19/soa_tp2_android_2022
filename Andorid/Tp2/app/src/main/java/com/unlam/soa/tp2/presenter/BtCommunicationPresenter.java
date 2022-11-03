@@ -9,6 +9,7 @@ public class BtCommunicationPresenter extends BasePresenter {
     private final BtCommunicationFragment fragment;
     private final BtCommunicationModel model;
     private String deviceMacAddress;
+
     public BtCommunicationPresenter(BtCommunicationFragment fragment, ConstraintLayout constraintLayout) {
         super(fragment, constraintLayout);
         this.fragment = fragment;
@@ -23,8 +24,9 @@ public class BtCommunicationPresenter extends BasePresenter {
         this.model.closeConnection();
     }
     public void notifyError(String action){
-        fragment.bluetoothDeviceConnection.onChange(new String[]{action,deviceMacAddress});
+        fragment.bluetoothDeviceConnection.onChange(new String[]{action, deviceMacAddress});
     }
+    
     public void sendAction(){
         this.model.sendManualAction();
     }
