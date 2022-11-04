@@ -7,6 +7,7 @@ import com.unlam.soa.tp2.presenter.AndroidPresenter;
 public class AndroidModel implements IModel {
 
     AndroidPresenter presenter;
+
     public AndroidModel(AndroidPresenter presenter){
         this.presenter = presenter;
     }
@@ -15,5 +16,4 @@ public class AndroidModel implements IModel {
     public void onDestroy() {
 
     }
-
 }
