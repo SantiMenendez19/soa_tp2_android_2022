@@ -3,15 +3,12 @@ package com.unlam.soa.tp2.view;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,13 +24,18 @@ public class AndroidActivity extends AppCompatActivity implements IView, SensorE
     ConstraintLayout constraintLayout;
 
     private SensorManager sensorManager;
-    private Sensor sensorGyroscope;
+    private Sensor sensorAccelerometer;
 
-    private TextView gyroscopeX;
-    private TextView gyroscopeY;
-    private TextView gyroscopeZ;
-    private Button button;
+    private TextView accelerometerX;
+    private TextView accelerometerY;
+    private TextView accelerometerZ;
+    private TextView positionX;
+    private TextView positionY;
+    private Button resetButton;
     private ImageView circle;
+
+    private int height;
+    private int width;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,23 +45,30 @@ public class AndroidActivity extends AppCompatActivity implements IView, SensorE
         this.presenter = new AndroidPresenter(this,constraintLayout);
 
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-        sensorGyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        button = findViewById(R.id.button);
-        gyroscopeX = findViewById(R.id.gyroscopeX);
-        gyroscopeY = findViewById(R.id.gyroscopeY);
-        gyroscopeZ = findViewById(R.id.gyroscopeZ);
+        resetButton = findViewById(R.id.button);
+
+        accelerometerX = findViewById(R.id.acelerometerX);
+        accelerometerY = findViewById(R.id.acelerometerY);
+        accelerometerZ = findViewById(R.id.acelerometerZ);
+
+        positionX = findViewById(R.id.positionX);
+        positionY = findViewById(R.id.positionY);
 
         circle = findViewById(R.id.circle);
-        createBitMap();
-        circle.setY(900);
-        circle.setX(0);
-        button.setOnClickListener(view -> resetCirclePosition());
+        this.presenter.createBitMap(circle);
+
+        width = this.presenter.getWidth();
+        height = this.presenter.getHeight();
+
+        resetButton.setOnClickListener(view -> this.presenter.resetCirclePosition(circle, width, height));
 
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setSelectedItemId(R.id.android);
         bottomNavigation.setOnItemSelectedListener(navBarItemSelectedListener);
     }
+
     @Override
     public int getResourceColor(int colorId) {
         return getResources().getColor(colorId);
@@ -70,6 +79,7 @@ public class AndroidActivity extends AppCompatActivity implements IView, SensorE
         super.onDestroy();
         this.presenter.onDestroy();
     }
+
     private final NavigationBarView.OnItemSelectedListener navBarItemSelectedListener = item->{
         switch(item.getItemId()){
             case R.id.arduino:
@@ -87,25 +97,7 @@ public class AndroidActivity extends AppCompatActivity implements IView, SensorE
     @Override
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, sensorGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    public void resetCirclePosition() {
-        circle.setY(900);
-        circle.setX(550);
-    }
-
-    private void createBitMap() {
-        Bitmap bitMap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-        bitMap = bitMap.copy(bitMap.getConfig(), true);
-        Canvas canvas = new Canvas(bitMap);
-
-        Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        paint.setColor(Color.RED);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(60, 60, 30, paint);
-        circle.setImageBitmap(bitMap);
+        sensorManager.registerListener(this, sensorAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -116,27 +108,35 @@ public class AndroidActivity extends AppCompatActivity implements IView, SensorE
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        float gyroscopeX = sensorEvent.values[0];
-        float gyroscopeY = sensorEvent.values[1];
-        float gyroscopeZ = sensorEvent.values[2];
+        float accelerometerX = sensorEvent.values[0];
+        float accelerometerY = sensorEvent.values[1];
+        float accelerometerZ = sensorEvent.values[2];
 
-        if (gyroscopeX > 0) {
-            circle.setY(circle.getY() + 50);
-        }
-        else if (gyroscopeX < 0) {
-            circle.setY(circle.getY() - 50);
-        }
-
-        if (gyroscopeY > 0) {
-            circle.setX(circle.getX() + 50);
-        }
-        else if (gyroscopeY < 0) {
-            circle.setX(circle.getX() - 50);
+        if (accelerometerY > 1 || accelerometerY < -1) {
+            if (circle.getY() >= 0 && circle.getY() - 30 <= this.height) {
+                circle.setY(circle.getY() + (5 * accelerometerY));
+            }
+            else {
+                circle.setY(circle.getY() - (5 * accelerometerY));
+            }
         }
 
-        this.gyroscopeX.setText(String.valueOf(gyroscopeX));
-        this.gyroscopeY.setText(String.valueOf(gyroscopeY));
-        this.gyroscopeZ.setText(String.valueOf(gyroscopeZ));
+        if (accelerometerX > 1 || accelerometerX < -1) {
+            if (circle.getX() >= 0 && circle.getX() - 30 <= this.width) {
+                circle.setX(circle.getX() - (5 * accelerometerX));
+            }
+            else {
+                circle.setX(circle.getX() + (5 * accelerometerX));
+            }
+        }
+
+        this.accelerometerX.setText(String.valueOf(accelerometerX));
+        this.accelerometerY.setText(String.valueOf(accelerometerY));
+        this.accelerometerZ.setText(String.valueOf(accelerometerZ));
+
+        this.positionX.setText(String.valueOf(circle.getX()));
+        this.positionY.setText(String.valueOf(circle.getY()));
+
     }
 
     @Override
