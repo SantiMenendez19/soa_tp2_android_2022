@@ -27,4 +27,23 @@
     <string name="ph_device_name">Device Name</string>
     <string name="ph_device_mac_address">000000000</string>
 
+    <string name="label_accelerometer_title">Acelerometro</string>
+    <string name="label_accelerometer_x">X</string>
+    <string name="label_accelerometer_y">Y</string>
+    <string name="label_accelerometer_z">Z</string>
+
+    <string name="accelerometer_x">X</string>
+    <string name="accelerometer_y">Y</string>
+    <string name="accelerometer_z">Z</string>
+
+    <string name="button_reset_text">Reiniciar posicion</string>
+
+    <string name="label_position_title">Posicion</string>
+    <string name="label_position_y">Y</string>
+    <string name="label_position_x">X</string>
+
+    <string name="position_y">Y</string>
+    <string name="position_x">X</string>
+
+
 </resources>

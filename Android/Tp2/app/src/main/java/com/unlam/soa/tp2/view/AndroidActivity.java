@@ -31,7 +31,6 @@ public class AndroidActivity extends AppCompatActivity implements IView, SensorE
     private TextView accelerometerZ;
     private TextView positionX;
     private TextView positionY;
-    private Button resetButton;
     private ImageView circle;
 
     private int height;
@@ -47,11 +46,11 @@ public class AndroidActivity extends AppCompatActivity implements IView, SensorE
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        resetButton = findViewById(R.id.button);
+        Button resetButton = findViewById(R.id.button);
 
-        accelerometerX = findViewById(R.id.acelerometerX);
-        accelerometerY = findViewById(R.id.acelerometerY);
-        accelerometerZ = findViewById(R.id.acelerometerZ);
+        accelerometerX = findViewById(R.id.accelerometerX);
+        accelerometerY = findViewById(R.id.accelerometerY);
+        accelerometerZ = findViewById(R.id.accelerometerZ);
 
         positionX = findViewById(R.id.positionX);
         positionY = findViewById(R.id.positionY);
