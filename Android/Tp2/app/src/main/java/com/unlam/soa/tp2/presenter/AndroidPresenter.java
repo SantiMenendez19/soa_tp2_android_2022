@@ -14,7 +14,7 @@ import com.unlam.soa.tp2.view.AndroidActivity;
 public class AndroidPresenter extends BasePresenter{
     private final AndroidModel model;
     private final AndroidActivity activity;
-    private DisplayMetrics displayMetrics;
+    private final DisplayMetrics displayMetrics;
 
     public AndroidPresenter(AndroidActivity activity, ConstraintLayout constraintLayout) {
         super(activity, constraintLayout);
@@ -33,7 +33,7 @@ public class AndroidPresenter extends BasePresenter{
         return this.displayMetrics.widthPixels;
     }
 
-    public void resetCirclePosition(ImageView circle, Integer height, Integer width) {
+    public void resetCirclePosition(ImageView circle, Integer width, Integer height) {
         circle.setX((float) (height / 2));
         circle.setY((float) (width / 2));
     }
