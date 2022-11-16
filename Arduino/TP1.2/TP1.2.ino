@@ -1,6 +1,6 @@
 // REGION LIBRARY
 #include <IRremote.h> //sensor IR
-#include <SoftwareSerial.h> //Seriar For bluetooth
+#include <SoftwareSerial.h> //Serial For bluetooth
 // END REGION LIBRARY
 
 // REGION PIN
