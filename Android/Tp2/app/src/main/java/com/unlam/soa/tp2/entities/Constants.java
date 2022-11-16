@@ -20,6 +20,7 @@ public class Constants {
     public static final String FRAGMENT_PAUSED = "FRAGMENT_PAUSED";
     public static final String FRAGMENT_RESUMED = "FRAGMENT_RESUMED";
     public static final int BT_READ_TIME_OUT=200;
+    public static final  String  MESSAGE_POWER ="MESSAGE_POWER";
 
 
     public static CustomPermission getBTPermission(String permission){

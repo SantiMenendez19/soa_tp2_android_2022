@@ -4,11 +4,13 @@ import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 
 import com.unlam.soa.tp2.entities.Constants;
 import com.unlam.soa.tp2.entities.CustomPermission;
-import com.unlam.soa.tp2.entities.backgroundtask.BtCommunicationRunnable;
-import com.unlam.soa.tp2.interfaces.IBluetoothRunnableNotification;
+import com.unlam.soa.tp2.backgroundtask.BtCommunicationThread;
 import com.unlam.soa.tp2.interfaces.IModel;
 import com.unlam.soa.tp2.presenter.BtCommunicationPresenter;
 
@@ -18,11 +20,20 @@ public class BtCommunicationModel implements IModel {
     private final BtCommunicationPresenter presenter;
     private final BluetoothAdapter btAdapter;
     private BluetoothSocket btSocket;
-    private BtCommunicationRunnable btCommunicationRunnable;
+    private BtCommunicationThread btCommunicationThread;
+    private final Handler handler;
 
     public BtCommunicationModel(BtCommunicationPresenter presenter) {
         this.presenter = presenter;
         btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Log.d("HiloPrincipal","Principal id:"+ Thread.currentThread().getId());
+        handler = new Handler(message -> {
+                Bundle bundle = message.getData();
+                String msg = bundle.getString(Constants.MESSAGE_POWER);
+                presenter.notifyReading(msg);
+            return true;
+        }
+        );
 
     }
 
@@ -34,9 +45,9 @@ public class BtCommunicationModel implements IModel {
             }
             btSocket = device.createRfcommSocketToServiceRecord(Constants.BT_MODULE_UUID);
             btSocket.connect();
-            btCommunicationRunnable = new BtCommunicationRunnable(btSocket);
-            btCommunicationRunnable.bluetoothRunnableNotification = bluetoothThreadNotification;
-            btCommunicationRunnable.run();
+            btCommunicationThread = new BtCommunicationThread(btSocket,handler);
+            //btCommunicationThread.bluetoothRunnableNotification = bluetoothThreadNotification;
+            btCommunicationThread.start();
 
         } catch (IOException e) {
             this.presenter.showError("Error: No se puede conectar al dispositivo "+device.getName());
@@ -47,7 +58,7 @@ public class BtCommunicationModel implements IModel {
     }
     public void sendManualAction(){
         try {
-            btCommunicationRunnable.write(Constants.ARDUINO_MANUAL_ACTION);
+            btCommunicationThread.write(Constants.ARDUINO_MANUAL_ACTION);
             presenter.showSuccess("Acción Enviada");
         }catch (IOException e) {
             presenter.showError("Error: No se pudo enviar la acción");
@@ -74,10 +85,4 @@ public class BtCommunicationModel implements IModel {
             e.printStackTrace();
         }
     }
-    private final IBluetoothRunnableNotification bluetoothThreadNotification = new IBluetoothRunnableNotification() {
-        @Override
-        public void notifyModel(String message) {
-            presenter.notifyReading(message);
-        }
-    };
 }
